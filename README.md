@@ -18,7 +18,7 @@ El proyecto contiene 3 microservicios [offers, users, notifications] donde cada 
 [* Descomprimir el archivo y acceder a el
 * Ejecutar el comando:
 ```
-[code blocks for commands]()](docker-compose up)
+docker-compose up
 
 ```
 
@@ -26,7 +26,7 @@ El proyecto contiene 3 microservicios [offers, users, notifications] donde cada 
 
 * Una vez ejecutado el software y los contenedores levantados simplemente es necesario acceder a 
 ```
-[code blocks for commands]()](http://localhost:5173)
+http://localhost:5173
 ```
 * El puerto del aplicativo se puede cambiar previamente en el docker-compose up
   
