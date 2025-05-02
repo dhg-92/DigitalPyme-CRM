@@ -21,6 +21,6 @@ jobs:
           password: ${{ secrets.TOKEN_OPENSUITECRM }}
         
       - name: Build image
-        run: 
+        run: |
           docker build . --tag ghcr.io/dhg-92/OpenSuite-CRM:latest
           docker push ghcr.io/dhg-92/opensuite-crm:latest
