@@ -15,11 +15,16 @@ El proyecto contiene 3 microservicios [offers, users, notifications] donde cada 
 ### Instalación
 
 * Descargar la última versión del software del repositorio de github.
-[* Descomprimir el archivo y acceder a el
+```
+git clone https://github.com/dhg-92/OpenSuite-CRM.git
+```
+* Acceder a la carpeta descargada
+```
+cd OpenSuite-CRM
+```
 * Ejecutar el comando:
 ```
 docker-compose up
-
 ```
 
 ### Ejecución del software
