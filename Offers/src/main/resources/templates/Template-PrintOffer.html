@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Offer Print View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        .offer-view {
+            padding: 20px;
+        }
+
+        .details-grid {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 20px;
+        }
+
+        .detail-item-offer {
+            display: table-cell;
+            vertical-align: top;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-spacing: 5px;
+        }
+
+        .detail-item-sep {
+            display: table-cell;
+            width: 3%;
+        }
+        .detail-item-sep p {
+            margin: 5px 0;
+        }
+
+        .detail-item-offer p {
+            margin: 5px 0;
+        }
+
+        .detail-item-client {
+            display: table-cell;
+            vertical-align: top;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .detail-item-client p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        thead {
+            background-color: #eee;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .price-summary {
+            margin-top: 20px;
+            width: 300px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            float: right;
+        }
+
+        .price-summary h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .price-line {
+            margin-bottom: 8px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .price-line.total {
+            font-weight: bold;
+            border-top: 1px solid #ccc;
+            padding-top: 8px;
+        }
+
+        .productInfo {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="offer-view">
+    <div class="details-grid">
+        <div class="detail-item-offer">
+            <strong>Oferta número:</strong>
+            <p th:text="${offer.idOffer}">1</p>
+
+            <strong>Empresa:</strong>
+            <p>OpenSuite CRM</p>
+
+            <strong>Contacto:</strong>
+            <p>comercial@opensuitecrm.com</p>
+            <p>+34 666 666 666</p>
+
+            <strong>Dirección:</strong>
+            <p>Calle Inventada 1, 08000, Barcelona, España</p>
+
+            <strong>Fecha oferta:</strong>
+            <p th:text="${#dates.format(offer.date, 'dd/MM/yyyy')}">01/01/2024</p>
+        </div>
+
+        <div class="detail-item-sep">
+            <p >
+            </p>
+        </div>
+
+        <div class="detail-item-client">
+            <strong>Cliente:</strong>
+            <p th:text="${offer.client.name} + ' ' + ${offer.client.surname}">Nombre Apellido</p>
+
+            <strong>Datos de contacto:</strong>
+            <p>
+                <span th:text="${offer.client.phone}">99999999</span><br/>
+                <span th:text="${offer.client.email}">email@ejemplo.com</span>
+            </p>
+
+            <strong>Empresa:</strong>
+            <p th:text="${offer.client.company}">Empresa S.A.</p>
+
+            <strong>Dirección:</strong>
+            <p>
+                <span th:text="${offer.client.address}">Dirección</span>,
+                <span th:text="${offer.client.zipCode}">00000</span>,
+                <span th:text="${offer.client.city}">Ciudad</span>,
+                <span th:text="${offer.client.country}">País</span>
+            </p>
+        </div>
+    </div>
+
+    <h3 class="productInfo">Productos</h3>
+
+    <table th:if="${offer.items != null} and ${#lists.size(offer.items) > 0}">
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Impuestos</th>
+            <th>Total Producto</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${offer.items}">
+            <td th:text="${product.name}">Producto</td>
+            <td th:text="${product.description}">Descripción</td>
+            <td th:text="${product.quantity}">1</td>
+            <td th:text="${product.productPrice} + ' €'">100.00 €</td>
+            <td th:text="${product.tax} + ' %'">21 %</td>
+            <td th:text="${product.totalPrice} + ' €'">121.00 €</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="price-summary">
+        <h3>Siguiente página</h3>
+        <div class="price-line">
+        </div>
+        <div class="price-line">
+        </div>
+        <div class="price-line total">
+        </div>
+    </div>
+</div>
+</body>
+</html>
