@@ -55,7 +55,7 @@ services:
 
   offers-service:
     build:
-      context: ./offers
+      context: ./Offers
       dockerfile: Dockerfile
     ports:
       - 18081:18081
@@ -68,7 +68,7 @@ services:
 
   users-service:
     build:
-      context: ./users
+      context: ./Users
       dockerfile: Dockerfile
     ports:
       - 18082:18082
@@ -81,7 +81,7 @@ services:
 
   notifications-service:
     build:
-      context: ./notifications
+      context: ./Notifications
       dockerfile: Dockerfile
     ports:
       - 18083:18083
@@ -95,7 +95,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./frontend
+      context: ./Frontend
       dockerfile: Dockerfile
     depends_on:
       -  offers-service
