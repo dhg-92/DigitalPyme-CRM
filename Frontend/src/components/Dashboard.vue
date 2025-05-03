@@ -1,7 +1,7 @@
 <template>
   <div class="data-container">
     <h2>Dashboard</h2>
-    <div class="dashboard-content">
+    <div class="dashboard-content" v-if="offersByStatus.length != 0">
       <div class="dashboard-row">
         <div class="dashboard-table">
           <h3>Ofertas por Estado</h3>
@@ -22,7 +22,7 @@
             </tbody>
           </table>
         </div>
-        <div class="dashboard-table">
+        <div class="dashboard-table" v-if="topClients.length != 0">
           <h3>Top 5 Clientes con más Ofertas Aceptadas</h3>
           <table>
             <thead>
@@ -40,7 +40,7 @@
           </table>
         </div>
       </div>
-      <div class="dashboard-row">
+      <div class="dashboard-row" v-if="offersLatestAccepted.length != 0">
         <div class="dashboard-table">
           <h3>Últimas 5 Ofertas Aceptadas</h3>
           <table>
@@ -61,7 +61,7 @@
             </tbody>
           </table>
         </div>
-        <div class="dashboard-table">
+        <div class="dashboard-table" v-if="offersLatestRejected.length != 0">
           <h3>Últimas 5 Ofertas Rechazadas</h3>
           <table>
             <thead>
@@ -82,7 +82,7 @@
           </table>
         </div>
       </div>
-      <div class="dashboard-row">
+      <div class="dashboard-row" v-if="offersLastweekPending.length != 0">
         <div class="dashboard-table">
           <h3>Ofertas pendientes del último mes</h3>
           <table>
@@ -209,6 +209,7 @@ const goToOffer = (id) => {
   router.push('/offers/' + id + '/products')
 }
 
+console.log(offersLastweekPending.value.length);
 fetchOffers()
 </script>
 
