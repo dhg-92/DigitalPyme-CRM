@@ -102,7 +102,7 @@ services:
       -  users-service
       -  notifications-service
     ports:
-      - 80:5173
+      - 80:80
 
   gateway:
     image: nginx:latest
