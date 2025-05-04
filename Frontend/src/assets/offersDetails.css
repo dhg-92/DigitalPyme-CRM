@@ -228,3 +228,12 @@
     margin-bottom: 0px;
     padding-bottom: 0px;
   }
+
+  fieldset {
+    border: 1px solid #fff;
+  }
+
+  .form-group input, select {
+    width: 60%;
+  }
+  

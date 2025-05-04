@@ -65,6 +65,10 @@ export const getExtendOffer = (id) => {
   return api.get('/offers/offers/'+id+'/extendInfo')
 };
 
+export const updateStatusOffer = (id, data) => {
+  return api.put('/offers/offers/'+id+'/status', data)
+};
+
 export const deleteOfferById = (id) => {
   return api.delete('/offers/offers/'+id)
 }
