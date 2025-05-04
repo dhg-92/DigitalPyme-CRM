@@ -2,7 +2,7 @@ import axios from 'axios';
 import router from '../router';
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8085',
+  baseURL: 'http://opensuitecrm.com:8085',
 });
 
 api.interceptors.request.use(config => {
