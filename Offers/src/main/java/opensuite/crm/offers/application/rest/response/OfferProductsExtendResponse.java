@@ -26,7 +26,11 @@ public class OfferProductsExtendResponse {
 
     private String description;
 
+    private BigDecimal baseproductPrice;
+
     private BigDecimal productPrice;
+
+    private BigDecimal margin;
 
     private BigDecimal tax;
 
@@ -40,9 +44,12 @@ public class OfferProductsExtendResponse {
         this.brand = productInfo.getBrand();
         this.model = productInfo.getModel();
         this.description = productInfo.getDescription();
-        this.productPrice = offerProductInfo.getProductPrice();
+        this.baseproductPrice = productInfo.getDefaultPrice();
+        this.margin = offerProductInfo.getMargin();
+        this.productPrice = offerProductInfo.getProductPrice().setScale(2, RoundingMode.HALF_UP);
         this.tax = offerProductInfo.getTax();
         this.quantity = offerProductInfo.getQuantity();
+
 
         this.totalPrice = offerProductInfo.getProductPrice().add(offerProductInfo.getProductPrice().multiply(offerProductInfo.getTax().divide(BigDecimal.valueOf(100)))).multiply(BigDecimal.valueOf(offerProductInfo.getQuantity()))
                 .setScale(2, RoundingMode.HALF_UP);

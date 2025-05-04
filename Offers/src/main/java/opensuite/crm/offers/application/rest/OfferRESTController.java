@@ -82,7 +82,10 @@ public class OfferRESTController {
         for (int i = 0; i < items.size(); i++) {
             Product productInfo = productService.findProductById(items.get(i).getProductId()).get();
 
-            BigDecimal totalPriceProduct = items.get(i).getProductPrice().multiply(BigDecimal.valueOf(items.get(i).getQuantity()));
+            BigDecimal baseproductPrice = items.get(i).getBaseproductPrice();
+            BigDecimal quantity = BigDecimal.valueOf(items.get(i).getQuantity());
+
+            BigDecimal totalPriceProduct = (baseproductPrice.add(baseproductPrice.multiply(items.get(i).getMargin().divide(BigDecimal.valueOf(100))))).multiply(quantity);
 
             totalBeforeTAX = totalBeforeTAX.add(totalPriceProduct);
             totalWithTAX = totalWithTAX.add(totalPriceProduct.multiply(items.get(i).getTax().divide(BigDecimal.valueOf(100))));
@@ -221,6 +224,11 @@ public class OfferRESTController {
 
         Optional<Offer> offerFound = offerService.findOfferByIdOffer(idOffer);
 
+        if (offerFound.get().getStatus().equals("Aceptada") || offerFound.get().getStatus().equals("Enviada") || offerFound.get().getStatus().equals("Rechazada")){
+            log.trace("The accepted or sent offer cannot be modified " + existingClient);
+            return ResponseEntity.status(409).body("The accepted or sent offer cannot be modified.");
+        }
+
         if (offerFound.isPresent()) {
             Offer udateOffer = new Offer();
             udateOffer.setIdOffer(idOffer);
@@ -239,6 +247,30 @@ public class OfferRESTController {
         } else {
             log.trace("Offer not exist " + offerRequest);
             return ResponseEntity.status(404).body("Offer not Exists.");
+        }
+    }
+
+    @PutMapping("/{idOffer}/status")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateStatusOffer(@RequestBody @NotNull @Valid UpdateStatusOfferRequest offerStatusRequest, @PathVariable Long idOffer) {
+        log.trace("updateStatusOffer");
+
+        log.trace("Update status offer " + offerStatusRequest);
+
+        Optional<Offer> offerFound = offerService.findOfferByIdOffer(idOffer);
+
+        if (!offerFound.isPresent()) {
+            log.trace("Offer not exist " + idOffer);
+            return ResponseEntity.status(404).body("Offer not Exists.");
+        }
+
+        if (offerStatusRequest.getStatus().equals("Aceptada") || offerStatusRequest.getStatus().equals("Rechazada")){
+            offerFound.get().setStatus(offerStatusRequest.getStatus());
+            Long offerId = offerService.updateOffer(offerFound.get());
+            return ResponseEntity.ok(offerId);
+        } else {
+            log.trace("Unable to update status in the offer " + idOffer);
+            return ResponseEntity.status(409).body("Unable to update status.");
         }
     }
 
@@ -289,9 +321,11 @@ public class OfferRESTController {
             ProductEntity productEntity = ProductEntity.fromDomain(productData.get(), CategoryEntity.fromDomain(productData.get().getCategory()));
 
             OfferProduct offerProduct = new OfferProduct();
+            offerProduct.setBaseproductPrice(offerProductData.get(i).getBaseproductPrice());
             offerProduct.setProductPrice(offerProductData.get(i).getProductPrice());
             offerProduct.setTax(offerProductData.get(i).getTax());
             offerProduct.setQuantity(offerProductData.get(i).getQuantity());
+            offerProduct.setMargin(offerProductData.get(i).getMargin());
 
             offerProductEntity.add(OfferProductEntity.fromDomain(offerProduct, offerEntity, productEntity));
         }
@@ -299,4 +333,6 @@ public class OfferRESTController {
         offerProductService.createAllOfferProduct(offerProductEntity);
         return ResponseEntity.ok().body("");
     }
+
+
 }

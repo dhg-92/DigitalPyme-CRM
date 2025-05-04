@@ -28,7 +28,13 @@ public class OfferProduct {
     private Long productId;
 
     @NotNull
+    public BigDecimal baseproductPrice;
+
+    @NotNull
     private BigDecimal productPrice;
+
+    @NotNull
+    private BigDecimal margin;
 
     @NotNull
     private BigDecimal tax;
