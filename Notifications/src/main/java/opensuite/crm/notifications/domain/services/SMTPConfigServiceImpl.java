@@ -117,7 +117,7 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
             javaMailSender.send(message);
             return "";
         } catch (Exception e) {
-            return e.toString();
+            return "Traza: " + e;
         }
     }
 

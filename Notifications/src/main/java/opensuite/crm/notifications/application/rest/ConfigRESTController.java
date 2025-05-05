@@ -14,6 +14,7 @@ import opensuite.crm.notifications.infrastructure.repository.security.JwtUtil;
 import opensuite.crm.notifications.infrastructure.repository.security.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -30,16 +31,16 @@ public class ConfigRESTController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public SmtpConfig getConfiguration() {
+    public ResponseEntity<?> getConfiguration() {
         log.trace("getConfiguration");
         SmtpConfig smtpConfig = smtpConfigService.getSMTPConfig().get();
         smtpConfig.setPassword(null);
-        return smtpConfig;
+        return ResponseEntity.ok().body(smtpConfig);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Boolean updateConfiguration(@RequestBody @NotNull@Valid UpdateConfigurationRequest updateConfigurationRequest) {
+    public ResponseEntity<?> updateConfiguration(@RequestBody @NotNull@Valid UpdateConfigurationRequest updateConfigurationRequest) {
         log.trace("updateConfiguration");
 
         SmtpConfig config = smtpConfigService.getSMTPConfig().get();
@@ -51,12 +52,18 @@ public class ConfigRESTController {
         config.setUseSSL(updateConfigurationRequest.getUseSSL());
         config.setAuth(updateConfigurationRequest.getAuth());
 
-        return smtpConfigService.updateSMTPConfig(config);
+        if (smtpConfigService.updateSMTPConfig(config)){
+            log.info("SMTP config updated");
+            return ResponseEntity.ok().body(true);
+        } else {
+            log.info("SMTP config update failed");
+            return ResponseEntity.ok().body(false);
+        }
     }
 
     @PostMapping("/testMail")
     @ResponseStatus(HttpStatus.OK)
-    public Boolean testMail(HttpServletRequest request) {
+    public ResponseEntity<?> testMail(HttpServletRequest request) {
         log.info("testMail");
 
         try {
@@ -79,9 +86,12 @@ public class ConfigRESTController {
             notification.setDateShipment(LocalDateTime.now());
             notificationService.createNotification(notification);
 
-            return true;
+            log.info("testMail Ok");
+            return ResponseEntity.ok().body(true);
+
         } catch (Exception e){
-            return false;
+            log.info("testMail error: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(false);
         }
     }
 }
