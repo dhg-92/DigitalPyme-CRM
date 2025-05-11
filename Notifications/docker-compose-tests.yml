@@ -9,9 +9,15 @@ services:
       POSTGRES_USER: notifications
       POSTGRES_PASSWORD: notifications
 
-  notifications-test:
+  notifications-service:
     build:
       context: .
       dockerfile: Dockerfile-test
+    ports:
+      - 18083:18083
     depends_on:
       - notificationsdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notificationsdb:5432/postgres
+      SPRING_DATASOURCE_USERNAME: notifications
+      SPRING_DATASOURCE_PASSWORD: notifications
