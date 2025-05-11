@@ -8,3 +8,10 @@ services:
     environment:
       POSTGRES_USER: offer
       POSTGRES_PASSWORD: offer
+
+  offers-test:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    depends_on:
+      - offerdb
