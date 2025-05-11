@@ -27,6 +27,9 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
       - run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+      - run: |
           docker-compose -f docker-compose.yml up -d
       - run: mvn test
 
@@ -50,6 +53,9 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
       - run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+      - run: |
           docker-compose -f docker-compose.yml up -d
       - run: mvn test
 
@@ -72,6 +78,9 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
       - run: |
           docker-compose -f docker-compose.yml up -d
       - run: mvn test
