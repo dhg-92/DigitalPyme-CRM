@@ -8,3 +8,10 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
+
+  users-test:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    depends_on:
+      - userdb
