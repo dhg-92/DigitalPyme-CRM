@@ -2,12 +2,18 @@ package opensuite.crm.notifications.tests;
 
 import opensuite.crm.notifications.domain.Notification;
 import opensuite.crm.notifications.domain.SmtpConfig;
+import opensuite.crm.notifications.domain.repository.NotificationRepository;
+import opensuite.crm.notifications.domain.repository.SMTPConfigRepository;
 import opensuite.crm.notifications.domain.services.NotificationService;
+import opensuite.crm.notifications.domain.services.NotificationServiceImpl;
 import opensuite.crm.notifications.domain.services.SMTPConfigService;
+import opensuite.crm.notifications.domain.services.SMTPConfigServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,11 +26,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class NotificationsUnitTest {
 
-    @Mock
-    private SMTPConfigService smtpConfigService;
+    @InjectMocks
+    private SMTPConfigServiceImpl smtpConfigService;
 
     @Mock
-    private NotificationService notificationService;
+    private SMTPConfigRepository smtpConfigRepository;
+
+    @InjectMocks
+    private NotificationServiceImpl notificationService;
+
+    @Mock
+    private NotificationRepository notificationRepository;
 
     @Test
     void unitTest_FindAllNotifications() {
@@ -37,26 +49,12 @@ public class NotificationsUnitTest {
         notification.setErrorMessage("");
         notification.setDateShipment(LocalDateTime.now());
 
-        when(notificationService.updateNotification(notification)).thenReturn(notification.getId());
+        when(notificationRepository.updateNotification(notification)).thenReturn(notification.getId());
         assertEquals(notification.getId(), notificationService.updateNotification(notification));
 
-        when(notificationService.findAllNotification()).thenReturn(List.of(notification));
+        when(notificationRepository.findAllNotification()).thenReturn(List.of(notification));
         List<Notification> result = notificationService.findAllNotification();
         assertEquals(notification.getId(), result.get(0).getId());
-    }
-
-    @Test
-    void unitTest_testMail_InvalidData() {
-        when(smtpConfigService.testMail("dh92@uoc.edu", "Unit Test")).thenReturn("");
-        String result = smtpConfigService.testMail("dh92@uoc.edu", "Unit Test");
-        assertEquals("", result);
-    }
-
-    @Test
-    void unitTest_testMail_CorrectData() {
-        when(smtpConfigService.testMail("dh92.uoc.edu", "Unit Test")).thenReturn("Traza: Invalid to email...");
-        String result = smtpConfigService.testMail("dh92.uoc.edu", "Unit Test");
-        assertTrue(result.startsWith("Traza: Invalid to email"));
     }
 
     @Test
@@ -72,8 +70,8 @@ public class NotificationsUnitTest {
                 .auth(false)
                 .build();
 
-        when(smtpConfigService.updateSMTPConfig(smtpConfig)).thenReturn(true);
-        when(smtpConfigService.getSMTPConfig()).thenReturn(Optional.of(smtpConfig));
+        when(smtpConfigRepository.updateConfig(smtpConfig)).thenReturn(true);
+        when(smtpConfigRepository.findSMTPConfig()).thenReturn(Optional.of(smtpConfig));
 
         assertTrue(smtpConfigService.updateSMTPConfig(smtpConfig));
         assertEquals(smtpConfig, smtpConfigService.getSMTPConfig().get());
