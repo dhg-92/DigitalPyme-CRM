@@ -8,3 +8,10 @@ services:
     environment:
       POSTGRES_USER: notifications
       POSTGRES_PASSWORD: notifications
+
+  notifications-test:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    depends_on:
+      - notificationsdb
