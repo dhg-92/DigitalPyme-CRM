@@ -9,14 +9,6 @@ on:
 jobs:
   Test-Notifications:
     runs-on: ubuntu-latest
-    services:
-      notificationsdb:
-        image: postgres
-        ports:
-          - 54322:5432
-        env:
-          POSTGRES_USER: notifications
-          POSTGRES_PASSWORD: notifications
     defaults:
       run:
         working-directory: ./Notifications
@@ -35,14 +27,6 @@ jobs:
 
   Test-Offers:
     runs-on: ubuntu-latest
-    services:
-      offerdb:
-        image: postgres
-        ports:
-          - 54320:5432
-        env:
-          POSTGRES_USER: offer
-          POSTGRES_PASSWORD: offer
     defaults:
       run:
         working-directory: ./Offers
@@ -61,14 +45,6 @@ jobs:
 
   Test-Users:
     runs-on: ubuntu-latest
-    services:
-      userdb:
-        image: postgres
-        ports:
-          - 54321:5432
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: user
     defaults:
       run:
         working-directory: ./Users
