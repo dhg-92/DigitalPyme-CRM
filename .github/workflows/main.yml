@@ -22,15 +22,12 @@ jobs:
         working-directory: ./Notifications
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'corretto'
-          
       - run: |
           docker-compose -f docker-compose.yml up -d
-          
       - run: mvn test
 
   Test-Offers:
@@ -48,15 +45,12 @@ jobs:
         working-directory: ./Offers
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'corretto'
-
       - run: |
           docker-compose -f docker-compose.yml up -d
-          
       - run: mvn test
 
   Test-Users:
@@ -74,13 +68,10 @@ jobs:
         working-directory: ./Users
     steps:
       - uses: actions/checkout@v3
-
       - uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'corretto'
-
       - run: |
           docker-compose -f docker-compose.yml up -d
-          
       - run: mvn test
