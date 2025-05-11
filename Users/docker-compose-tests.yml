@@ -11,7 +11,7 @@ services:
 
   users-service:
     build:
-      context: ./Users
+      context: .
       dockerfile: Dockerfile-test
     ports:
       - 18082:18082
