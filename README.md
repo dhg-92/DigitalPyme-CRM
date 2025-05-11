@@ -48,5 +48,5 @@ ex. Diego Higuera Goncalves
 
 ## Licencia
 
-Este proyecto está licenciado bajo la licencia de Reconocimiento-NoComercial-SinObraDerivada 3.0 España de Creative Commons
+Este proyecto está licenciado bajo la licencia de Reconocimiento-NoComercial-SinObraDerivada 3.0 España de Creative Commons.
 
