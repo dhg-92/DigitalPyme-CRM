@@ -9,9 +9,15 @@ services:
       POSTGRES_USER: offer
       POSTGRES_PASSWORD: offer
 
-  offers-test:
+  offers-service:
     build:
       context: .
       dockerfile: Dockerfile-test
+    ports:
+      - 18081:18081
     depends_on:
       - offerdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://:5432/postgres
+      SPRING_DATASOURCE_USERNAME: offer
+      SPRING_DATASOURCE_PASSWORD: offer
