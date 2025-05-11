@@ -18,6 +18,6 @@ services:
     depends_on:
       - offerdb
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://:5432/postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://offerdb:5432/postgres
       SPRING_DATASOURCE_USERNAME: offer
       SPRING_DATASOURCE_PASSWORD: offer
