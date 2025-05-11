@@ -13,7 +13,10 @@ jobs:
       notificationsdb:
         image: postgres
         ports:
-          - 54321:5432
+          - 54322:5432
+        env:
+          POSTGRES_USER: notifications
+          POSTGRES_PASSWORD: notifications
     defaults:
       run:
         working-directory: ./Notifications
@@ -24,7 +27,10 @@ jobs:
         with:
           java-version: '21'
           distribution: 'corretto'
-
+          
+      - run: |
+          docker-compose -f docker-compose.yml up -d
+          
       - run: mvn test
 
   Test-Offers:
@@ -34,6 +40,9 @@ jobs:
         image: postgres
         ports:
           - 54320:5432
+        env:
+          POSTGRES_USER: offer
+          POSTGRES_PASSWORD: offer
     defaults:
       run:
         working-directory: ./Offers
@@ -45,6 +54,9 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
 
+      - run: |
+          docker-compose -f docker-compose.yml up -d
+          
       - run: mvn test
 
   Test-Users:
@@ -54,6 +66,9 @@ jobs:
         image: postgres
         ports:
           - 54321:5432
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: user
     defaults:
       run:
         working-directory: ./Users
@@ -65,4 +80,7 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
 
+      - run: |
+          docker-compose -f docker-compose.yml up -d
+          
       - run: mvn test
