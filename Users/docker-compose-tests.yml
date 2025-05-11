@@ -9,9 +9,15 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
 
-  users-test:
+  users-service:
     build:
-      context: .
+      context: ./Users
       dockerfile: Dockerfile-test
+    ports:
+      - 18082:18082
     depends_on:
       - userdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userdb:5432/postgres
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: user
