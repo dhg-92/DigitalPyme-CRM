@@ -1,0 +1,10 @@
+services:
+  userdb:
+    image: postgres
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 54321:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
