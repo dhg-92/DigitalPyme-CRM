@@ -30,7 +30,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f ../docker-compose.yml up -d
       - run: mvn test
 
   Test-Offers:
@@ -56,7 +56,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f ../docker-compose.yml up -d
       - run: mvn test
 
   Test-Users:
@@ -82,5 +82,5 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
       - run: |
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f ../docker-compose.yml up -d
       - run: mvn test
