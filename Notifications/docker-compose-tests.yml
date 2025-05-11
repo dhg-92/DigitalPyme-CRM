@@ -1,0 +1,10 @@
+services:
+  notificationsdb:
+    image: postgres
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 54322:5432
+    environment:
+      POSTGRES_USER: notifications
+      POSTGRES_PASSWORD: notifications
