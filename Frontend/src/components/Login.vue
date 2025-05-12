@@ -13,32 +13,32 @@
                         <div class="info">
                             Iniciar sesión
                         </div>
-                        <input v-model="email" type="text" placeholder="Introduce correo electrónico" required />
-                        <input v-model="password" type="password" placeholder="Introduce contraseña" required
+                        <input v-model="email" type="text" name="mail" placeholder="Introduce correo electrónico" required />
+                        <input v-model="password" type="password" name="password" placeholder="Introduce contraseña" required
                             autocomplete="off" />
                         <span id="goToResetPass" @click="swapLoginForm()">
                             ¿Contraseña olvidada?
                         </span>
                         <br>
-                        <button type="submit" class="button">Iniciar sesión</button>
+                        <button type="submit" class="button" name="login">Iniciar sesión</button>
                     </form>
                     <form v-if="!loginForm && !showPasswordForm" @submit.prevent="resetPasswordForm()">
                         <div class="info">
                             Inserte su correo a continuación para restablecer la contraseña:
                         </div>
-                        <input v-model="email" type="email" placeholder="Introduce correo electrónico" required />
+                        <input v-model="email" type="email" name="resetPassInput" placeholder="Introduce correo electrónico" required />
                         <span id="goToLogin" @click="swapLoginForm()">
                             Volver
                         </span>
                         <br>
-                        <button type="submit">Solicitar restablecimiento</button>
+                        <button type="submit" name="resetPassButton">Solicitar restablecimiento</button>
                     </form>
                     <form v-if="showPasswordForm" @submit.prevent="setPasswordForm()">
                         <div class="info">Restablecer contraseña</div>
                         <input v-model="email" type="email" placeholder="Introduce tu correo" required />
                         <input v-model="newPassword" type="password" placeholder="Nueva contraseña" required />
                         <input v-model="confirmPassword" type="password" placeholder="Confirmar nueva contraseña" required />
-                        <button type="submit">Restablecer contraseña</button>
+                        <button type="submit" name="resetPassConfirmButton">Restablecer contraseña</button>
                     </form>
                 </div>
                 <div id="footer">

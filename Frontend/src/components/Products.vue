@@ -100,7 +100,7 @@ const filteredProducts = computed(() => {
 })
 
 const allValuesSelected = computed(() => {
-  if (productList.value.length > 0) {
+  if (productList.value && productList.value.length > 0) {
     if (selectedProducts.value.length == productList.value.length) {
       return true;
     }
@@ -146,7 +146,7 @@ async function deleteProduct() {
     }
   }
 
-  productList.value = (await getAllProducts()).response.data;
+  productList.value = (await getAllProducts()).data;
   selectedProducts.value = []
 }
 

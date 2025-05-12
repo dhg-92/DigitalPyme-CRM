@@ -208,8 +208,6 @@ const pending_LastWeek_offers = () => {
 const goToOffer = (id) => {
   router.push('/offers/' + id + '/products')
 }
-
-console.log(offersLastweekPending.value.length);
 fetchOffers()
 </script>
 
