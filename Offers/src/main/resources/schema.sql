@@ -10,7 +10,7 @@ VALUES
     ('Portatil', 'Intel Core i5-13420H/16GB/1TB SSD/15.6', 400.00, 21.00, 'Lenovo', 'IdeaPad Slim 3 Gen 8 15IRH8', 1);
 
 INSERT INTO "offer" (name, date, client_id, status, total_price)
-VALUES ('Venta de portatil','2025-01-01 01:00:00',1,'Borrador',421.00);
+VALUES ('Venta de portatil','2025-05-10 14:30:00',1,'Borrador',580.80);
 
 INSERT INTO "offer_product" (offer_id, product_id, product_price, tax, quantity, margin, baseproduct_price)
 VALUES
