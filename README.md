@@ -31,7 +31,7 @@ docker-compose up
 
 * Una vez ejecutado el software y los contenedores levantados simplemente es necesario acceder a 
 ```
-http://localhost:5173
+http://localhost
 ```
 * El puerto del aplicativo se puede cambiar previamente en el docker-compose up
   
