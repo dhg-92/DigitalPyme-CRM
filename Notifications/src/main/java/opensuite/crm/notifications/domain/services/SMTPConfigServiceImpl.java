@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.Properties;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class SMTPConfigServiceImpl implements SMTPConfigService  {
 
     private final SMTPConfigRepository smtpConfigRepository;
+    private SmtpConfig smtpConfig;
 
     @Override
     public Optional<SmtpConfig> getSMTPConfig() {
@@ -43,6 +45,7 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("templates/sendOffer.html");
             String htmlTemplate = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
+            helper.setFrom(smtpConfig.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlTemplate.replace("{{idOffer}}", idOffer), true);
@@ -66,6 +69,7 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("templates/startResetPassword.html");
             String htmlTemplate = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
+            helper.setFrom(smtpConfig.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlTemplate.replace("{{url}}", urlResetPassword), true);
@@ -88,6 +92,7 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("templates/confirmResetPassword.html");
             String htmlTemplate = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
+            helper.setFrom(smtpConfig.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlTemplate, true);
@@ -110,6 +115,7 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream("templates/testMail.html");
             String htmlTemplate = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
+            helper.setFrom(smtpConfig.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlTemplate, true);
@@ -122,16 +128,31 @@ public class SMTPConfigServiceImpl implements SMTPConfigService  {
     }
 
     public JavaMailSenderImpl configMail(){
-        SmtpConfig smtpConfig = smtpConfigRepository.findSMTPConfig().get();
+        smtpConfig = smtpConfigRepository.findSMTPConfig().get();
         JavaMailSenderImpl mailSenderImpl = new JavaMailSenderImpl();
+
         mailSenderImpl.setHost(smtpConfig.getHost());
-        mailSenderImpl.setProtocol(smtpConfig.getProtocol());
+        mailSenderImpl.setPort(smtpConfig.getPort());
         mailSenderImpl.setUsername(smtpConfig.getUsername());
         mailSenderImpl.setPassword(smtpConfig.getPassword());
 
-        mailSenderImpl.getJavaMailProperties().put("mail.smtp.starttls.enable", smtpConfig.getUseSSL());
-        mailSenderImpl.getJavaMailProperties().put("mail.smtp.auth", smtpConfig.getAuth());
-        mailSenderImpl.getJavaMailProperties().put("mail.smtp.socketFactory.port", smtpConfig.getPort());
+        Properties props = mailSenderImpl.getJavaMailProperties();
+        props.put("mail.transport.protocol", smtpConfig.getProtocol());
+        props.put("mail.smtp.auth", String.valueOf(smtpConfig.getAuth()));
+
+        boolean ssl = smtpConfig.getUseSSL();
+
+        if (smtpConfig.getPort() == 465) {
+            props.put("mail.smtp.ssl.enable", String.valueOf(ssl));
+            props.put("mail.smtp.starttls.enable", String.valueOf(!ssl));
+        } else if (smtpConfig.getPort() == 587) {
+            props.put("mail.smtp.ssl.enable", String.valueOf(!ssl));
+            props.put("mail.smtp.starttls.enable", String.valueOf(ssl));
+        } else {
+            props.put("mail.smtp.ssl.enable", ssl);
+            props.put("mail.smtp.starttls.enable", ssl);
+        }
+
         return mailSenderImpl;
     }
 
