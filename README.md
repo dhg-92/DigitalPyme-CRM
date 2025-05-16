@@ -1,4 +1,4 @@
-# Open Suite CRM
+# Digital Pyme CRM
 
 Desarrollo e implementación de un sistema de ofertas (CRM) basado para PYMES.
 
@@ -16,11 +16,11 @@ El proyecto contiene 3 microservicios [offers, users, notifications] donde cada 
 
 * Descargar la última versión del software del repositorio de github.
 ```
-git clone https://github.com/dhg-92/OpenSuite-CRM.git
+git clone https://github.com/dhg-92/DigitalPyme-CRM.git
 ```
 * Acceder a la carpeta descargada
 ```
-cd OpenSuite-CRM
+cd DigitalPyme-CRM
 ```
 * Ejecutar el comando:
 ```
