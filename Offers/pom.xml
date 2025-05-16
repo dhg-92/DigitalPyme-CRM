@@ -8,7 +8,7 @@
         <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>opensuite.crm</groupId>
+    <groupId>digitalpyme.crm</groupId>
     <artifactId>Offers</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Offers</name>

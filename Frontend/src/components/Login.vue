@@ -6,7 +6,7 @@
         <div class="auth">
             <div id="content">
                 <div id="head">
-                    <h1 class="title">OpenSuite CRM </h1>
+                    <h1 class="title">Digital Pyme CRM </h1>
                 </div>
                 <div id="container">
                     <form v-if="loginForm && !showPasswordForm" @submit.prevent="loginUser()">
@@ -42,7 +42,7 @@
                     </form>
                 </div>
                 <div id="footer">
-                    <span id="copyright">© 2025 OpenSuite CRM</span>
+                    <span id="copyright">© 2025 Digital Pyme CRM</span>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <header class="top-header">
     <div class="app-name">
-      <router-link to="/">OpenSuite CRM</router-link>
+      <router-link to="/">Digital Pyme CRM</router-link>
     </div>
     <nav class="top-nav">
       <ul>
