@@ -6,7 +6,7 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-slim
+FROM amazoncorretto:21
 
 WORKDIR /app
 
