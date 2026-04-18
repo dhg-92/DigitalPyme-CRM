@@ -1,15 +1,13 @@
 package digitalpyme.crm.users.application.rest;
 
+import digitalpyme.crm.users.application.rest.request.*;
+import digitalpyme.crm.users.infrastructure.repository.security.TOTPUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import digitalpyme.crm.users.application.rest.data.RestorePasswordData;
-import digitalpyme.crm.users.application.rest.request.CreateAuthUserRequest;
-import digitalpyme.crm.users.application.rest.request.CreateRestorePasswordUserRequest;
-import digitalpyme.crm.users.application.rest.request.CreateUserRequest;
-import digitalpyme.crm.users.application.rest.request.RestorePasswordRequest;
 import digitalpyme.crm.users.application.rest.response.UserResponse;
 import digitalpyme.crm.users.domain.User;
 import digitalpyme.crm.users.infrastructure.repository.security.JwtUtil;
@@ -24,6 +22,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,10 +45,143 @@ public class UserRESTController {
         Optional<User> user = userService.findUserByEmail(userRequest.getEmail());
 
         if (user.isPresent() && userRequest.getPassword().equals(user.get().getPassword())) {
-            return ResponseEntity.ok(JwtUtil.generateToken(user.orElse(null)));
+
+            if (Boolean.TRUE.equals(user.get().getMfaEnabled())
+                    && user.get().getMfaSecret() != null) {
+
+                String tempToken = JwtUtil.generateTempToken(user.get());
+
+                return ResponseEntity.ok(
+                        Map.of(
+                                "mfaRequired", true,
+                                "mfaToken", tempToken
+                        )
+                );
+            }
+
+            return ResponseEntity.ok(JwtUtil.generateToken(user.get()));
         }
 
         return ResponseEntity.badRequest().body("Invalid username or password.");
+    }
+
+    @PostMapping("/mfa/verify")
+    public ResponseEntity<?> verifyMfa(HttpServletRequest request, @RequestBody MFACodeRequest data) {
+        log.trace("verifyMFA");
+
+        log.trace("Verify MFA: " + request.toString());
+
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing token");
+        }
+
+        String token = authHeader.substring(7);
+
+        if (!JwtUtil.validateToken(token) || !JwtUtil.isMfaToken(token)) {
+            return ResponseEntity.status(401).body("Invalid MFA token");
+        }
+
+        User tokenUser = JwtUtil.extractUsername(token);
+
+        Optional<User> user = userService.findUserById(tokenUser.getIdUser());
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        if (user.get().getMfaSecret() == null) {
+            return ResponseEntity.badRequest().body("MFA not configured");
+        }
+
+        boolean isValid = TOTPUtil.verifyCode(
+                user.get().getMfaSecret(),
+                data.getMfaCode()
+        );
+
+        if (!isValid) {
+            return ResponseEntity.status(401).body("Invalid TOTP code");
+        }
+
+        return ResponseEntity.ok(JwtUtil.generateToken(user.get()));
+    }
+
+    @GetMapping("/mfa/setup")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> setupMfa(HttpServletRequest request) {
+
+        log.trace("setupMFA");
+
+        try {
+            User userData = JwtUtil.extractUsername(request.getHeader("Authorization").substring(7));
+
+            if (userData == null) {
+                return ResponseEntity.status(401).body("Invalid credentials.");
+            }
+
+            Optional<User> user = userService.findUserById(userData.getIdUser());
+
+            if (user.isEmpty()) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+
+            if (Boolean.TRUE.equals(user.get().getMfaEnabled())) {
+                return ResponseEntity.badRequest().body("MFA already enabled");
+            }
+
+            String secret = TOTPUtil.generateSecret();
+
+            user.get().setMfaSecret(secret);
+            userService.createUser(user.get());
+
+            return ResponseEntity.ok(Map.of("secret", secret));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid credentials.");
+        }
+    }
+
+    @PostMapping("/mfa/confirm")
+    public ResponseEntity<?> confirmMfa(HttpServletRequest request, @RequestBody MFACodeRequest data) {
+
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Missing token");
+        }
+
+        String jwt = authHeader.substring(7);
+
+        if (!JwtUtil.validateToken(jwt)) {
+            return ResponseEntity.status(401).body("Invalid token");
+        }
+
+        User tokenUser = JwtUtil.extractUsername(jwt);
+
+        Optional<User> user = userService.findUserById(tokenUser.getIdUser());
+
+        if (user.isEmpty()) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        if (user.get().getMfaSecret() == null) {
+            return ResponseEntity.badRequest().body("MFA not initialized");
+        }
+
+        boolean isValid = TOTPUtil.verifyCode(
+                user.get().getMfaSecret(),
+                data.getMfaCode()
+        );
+
+        if (!isValid) {
+            return ResponseEntity.status(401).body("Invalid TOTP code");
+        }
+
+        user.get().setMfaEnabled(true);
+        userService.createUser(user.get());
+
+        return ResponseEntity.ok("MFA activated");
     }
 
     @GetMapping
@@ -91,7 +223,7 @@ public class UserRESTController {
     }
 
     @DeleteMapping("/{idUser}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long idUser){
+    public ResponseEntity<?> deleteUser(@PathVariable Long idUser) {
         log.trace("deleteUser");
 
         if (idUser == 1) {
@@ -153,7 +285,7 @@ public class UserRESTController {
 
     @GetMapping("/info")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<?>  getInfoUser(HttpServletRequest request) {
+    public Optional<?> getInfoUser(HttpServletRequest request) {
         log.trace("getInfoUser");
 
         try {
@@ -201,14 +333,13 @@ public class UserRESTController {
 
         if (user.isPresent()) {
             if (user.get().getRestoreToken().equals(createRestorePasswordUserRequest.getRestoreToken())
-                    && LocalDateTime.now().isBefore(user.get().getValidRestoreToken()))
-            {
+                    && LocalDateTime.now().isBefore(user.get().getValidRestoreToken())) {
                 user.get().setPassword(createRestorePasswordUserRequest.getPassword());
                 user.get().setRestoreToken(null);
                 user.get().setValidRestoreToken(null);
                 userService.createUser(user.get());
 
-                RestorePasswordData restorePasswordData = new RestorePasswordData(UUID.randomUUID().toString(),  user.get().getEmail(), null);
+                RestorePasswordData restorePasswordData = new RestorePasswordData(UUID.randomUUID().toString(), user.get().getEmail(), null);
                 userKafkaTemplate.send("restorePassword", restorePasswordData);
                 return ResponseEntity.noContent().build();
             }

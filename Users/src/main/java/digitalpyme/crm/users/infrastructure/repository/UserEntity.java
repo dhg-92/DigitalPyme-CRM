@@ -45,6 +45,12 @@ public class UserEntity implements DomainTranslatable<User> {
     @Column(name = "validrestoreToken", nullable = true)
     private LocalDateTime validRestoreToken;
 
+    @Column(name = "mfaEnabled", nullable = true)
+    private Boolean mfaEnabled;
+
+    @Column(name = "mfaSecret", nullable = true)
+    private String mfaSecret;
+
     public static UserEntity fromDomain(User user) {
         if (user == null) {
             return null;
@@ -60,6 +66,8 @@ public class UserEntity implements DomainTranslatable<User> {
                 .isAdmin(user.getIsAdmin())
                 .restoreToken(user.getRestoreToken())
                 .validRestoreToken(user.getValidRestoreToken())
+                .mfaEnabled(user.getMfaEnabled())
+                .mfaSecret(user.getMfaSecret())
                 .build();
     }
 
@@ -75,6 +83,8 @@ public class UserEntity implements DomainTranslatable<User> {
                 .isAdmin(this.getIsAdmin())
                 .restoreToken(this.getRestoreToken())
                 .validRestoreToken(this.getValidRestoreToken())
+                .mfaEnabled(this.getMfaEnabled())
+                .mfaSecret(this.getMfaSecret())
                 .build();
     }
 }

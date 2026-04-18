@@ -18,4 +18,5 @@ public interface UserService {
     Optional<User> findUserByEmail(String email);
 
     Boolean removeUser(Long idUser);
+
 }

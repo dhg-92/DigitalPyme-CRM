@@ -45,4 +45,11 @@ public class User {
 
     @Null
     private LocalDateTime validRestoreToken;
+
+    @Null
+    private Boolean mfaEnabled;
+
+    @Null
+    private String  mfaSecret;
+
 }

@@ -43,13 +43,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             jwt = authorizationHeader.substring(7);
             if (!JwtUtil.validateToken(jwt)) {
-                response = new ExceptionHandler().InvalidToken(response);
+                new ExceptionHandler().InvalidToken(response);
+                return;
+            }
+
+            // MFA tokens
+            if (JwtUtil.isMfaToken(jwt)) {
+                chain.doFilter(request, response);
                 return;
             }
 
             username = JwtUtil.extractUsername(jwt);
             if (username == null) {
-                response = new ExceptionHandler().InvalidToken(response);
+                new ExceptionHandler().InvalidToken(response);
                 return;
             }
 

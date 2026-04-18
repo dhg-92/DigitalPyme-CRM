@@ -23,6 +23,8 @@ public class UserResponse {
 
     private Boolean isAdmin;
 
+    private Boolean mfaEnabled;
+
     public static UserResponse userToGetUserResponse(User user) {
         return new UserResponse(
                 user.getIdUser(),
@@ -30,7 +32,8 @@ public class UserResponse {
                 user.getSurname(),
                 user.getEmail(),
                 user.getPhone(),
-                user.getIsAdmin()
+                user.getIsAdmin(),
+                user.getMfaEnabled()
         );
     }
 }

@@ -1,5 +1,6 @@
 package digitalpyme.crm.users.domain.services;
 
+import digitalpyme.crm.users.infrastructure.repository.security.TOTPUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import digitalpyme.crm.users.domain.User;

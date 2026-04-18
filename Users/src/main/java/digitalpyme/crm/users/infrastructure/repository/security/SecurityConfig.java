@@ -26,16 +26,21 @@ public class SecurityConfig {
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/users/login").permitAll()
-                    .requestMatchers("/users/restorePassword").permitAll()
-                    .requestMatchers("/users/setPassword").permitAll()
-                    .requestMatchers("/users/info").authenticated()
-                    .requestMatchers("/users/**").hasAuthority("ROLE_ADMIN")
-                    .anyRequest().permitAll()
+                        .requestMatchers("/users/login").permitAll()
+                        .requestMatchers("/users").permitAll()
+                        .requestMatchers("/users/mfa/**").permitAll()
+                        .requestMatchers("/users/restorePassword").permitAll()
+                        .requestMatchers("/users/setPassword").permitAll()
+                        .requestMatchers("/users/mfa/setup").authenticated()
+                        .requestMatchers("/users/mfa/confirm").authenticated()
+                        .requestMatchers("/users/info").authenticated()
+                        .requestMatchers("/users/**").hasAuthority("ROLE_ADMIN")
+                        .anyRequest().permitAll()
                 ).exceptionHandling(exception -> exception
                         .accessDeniedHandler(new ExceptionHandler.CustomAccessDeniedHandler())
                         .authenticationEntryPoint(new ExceptionHandler.CustomAuthenticationEntryPoint())
-                ).csrf(csrf -> csrf.disable());;
+                ).csrf(csrf -> csrf.disable());
+        ;
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

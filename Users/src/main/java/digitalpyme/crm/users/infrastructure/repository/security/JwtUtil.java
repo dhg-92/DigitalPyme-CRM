@@ -28,6 +28,7 @@ public class JwtUtil {
                 .claim("name", user.getName())
                 .claim("surname", user.getSurname())
                 .claim("isAdmin", user.getIsAdmin())
+                .claim("type", "access")
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, getSecretKey())
@@ -50,14 +51,41 @@ public class JwtUtil {
         }
     }
 
+    public static Claims extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public static String generateTempToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + (5 * 60 * 1000));
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("id", user.getIdUser())
+                .claim("type", "MFA")
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public static boolean isMfaToken(String token) {
+        try {
+            Claims claims = extractClaims(token);
+            String type = claims.get("type", String.class);
+            return "MFA".equals(type);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public static User extractUsername(String token) {
         if (validateToken(token)) {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(getSecretKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+            Claims claims = extractClaims(token);
 
             User user = new User();
             user.setIdUser(claims.get("id", Long.class));
