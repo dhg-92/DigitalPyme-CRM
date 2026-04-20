@@ -11,6 +11,14 @@ api.interceptors.request.use(config => {
     return config;
   }
 
+  if (config.url.includes('/users/users/mfa/verify')) {
+    const mfaToken = localStorage.getItem("mfa_token");
+    if (mfaToken) {
+      config.headers.Authorization = `Bearer ${mfaToken}`;
+      return config;
+    }
+  }
+
   const token = localStorage.getItem('access_token');
   const expirationDate = localStorage.getItem('expires_in');
 
@@ -27,6 +35,18 @@ api.interceptors.request.use(config => {
 
 export const login = (data) => {
   return api.post('/users/users/login', data);
+};
+
+export const setupMFA = () => {
+  return api.get('/users/users/mfa/setup');
+};
+
+export const confirmMFA = (data) => {
+  return api.post('/users/users/mfa/confirm', data);
+};
+
+export const verifyMFA = (data) => {
+  return api.post('/users/users/mfa/verify', data);
 };
 
 export const setRestorePassword = (data) => {
@@ -46,7 +66,7 @@ export const getAllOffers = () => {
 };
 
 export const getOfferById = (id) => {
-  return api.get('/offers/offers/'+id)
+  return api.get('/offers/offers/' + id)
 }
 
 export const createOffer = (data) => {
@@ -54,23 +74,23 @@ export const createOffer = (data) => {
 };
 
 export const updateProductsByOfferId = (id, data) => {
-  return api.post('/offers/offers/'+id+'/products', data)
+  return api.post('/offers/offers/' + id + '/products', data)
 };
 
 export const updateOfferById = (id, data) => {
-  return api.put('/offers/offers/'+id, data)
+  return api.put('/offers/offers/' + id, data)
 };
 
 export const getExtendOffer = (id) => {
-  return api.get('/offers/offers/'+id+'/extendInfo')
+  return api.get('/offers/offers/' + id + '/extendInfo')
 };
 
 export const updateStatusOffer = (id, data) => {
-  return api.put('/offers/offers/'+id+'/status', data)
+  return api.put('/offers/offers/' + id + '/status', data)
 };
 
 export const deleteOfferById = (id) => {
-  return api.delete('/offers/offers/'+id)
+  return api.delete('/offers/offers/' + id)
 }
 
 export const getAllClients = () => {
@@ -78,11 +98,11 @@ export const getAllClients = () => {
 };
 
 export const getClientById = (id) => {
-  return api.get('/offers/clients/'+id);
+  return api.get('/offers/clients/' + id);
 }
 
 export const updateClientById = (id, data) => {
-  return api.put('/offers/clients/'+id, data)
+  return api.put('/offers/clients/' + id, data)
 };
 
 export const createClient = (data) => {
@@ -90,11 +110,11 @@ export const createClient = (data) => {
 };
 
 export const deleteClientById = (id) => {
-    return api.delete('/offers/clients/'+id)
+  return api.delete('/offers/clients/' + id)
 }
 
 export const deleteProductById = (id) => {
-  return api.delete('/offers/products/'+id)
+  return api.delete('/offers/products/' + id)
 }
 
 export const getAllProducts = () => {
@@ -102,11 +122,11 @@ export const getAllProducts = () => {
 };
 
 export const getProductById = (id) => {
-  return api.get('/offers/products/'+id);
+  return api.get('/offers/products/' + id);
 }
 
 export const updateProductById = (id, data) => {
-  return api.put('/offers/products/'+id, data)
+  return api.put('/offers/products/' + id, data)
 };
 
 export const createProduct = (data) => {
@@ -118,15 +138,15 @@ export const getAllCategories = () => {
 };
 
 export const deleteCategoryById = (id) => {
-  return api.delete('/offers/category/'+id);
+  return api.delete('/offers/category/' + id);
 }
 
 export const getCategoryById = (id) => {
-  return api.get('/offers/category/'+id);
+  return api.get('/offers/category/' + id);
 }
 
 export const updateCategoryById = (id, data) => {
-  return api.put('/offers/category/'+id, data)
+  return api.put('/offers/category/' + id, data)
 };
 
 export const createCategory = (data) => {
@@ -142,25 +162,25 @@ export const createUser = (data) => {
 };
 
 export const getUserById = (id) => {
-  return api.get('/users/users/'+id);
+  return api.get('/users/users/' + id);
 }
 
 export const updateUserById = (id, data) => {
-  return api.put('/users/users/'+id, data)
+  return api.put('/users/users/' + id, data)
 };
 
 export const deleteUserById = (id) => {
-  return api.delete('/users/users/'+id)
+  return api.delete('/users/users/' + id)
 }
 
 export const printOfferById = (id) => {
-  return api.get('/offers/offers/'+id+'/pdf', {
+  return api.get('/offers/offers/' + id + '/pdf', {
     responseType: 'arraybuffer',
   });
 }
 
 export const sendOfferApi = (id) => {
-  return api.post('/offers/offers/'+id+'/sendoffer')
+  return api.post('/offers/offers/' + id + '/sendoffer')
 };
 
 export const getNotifications = () => {
