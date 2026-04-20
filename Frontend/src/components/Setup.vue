@@ -69,8 +69,6 @@ const setupMFAData = async () => {
     
     const user = profileUser();
 
-    console.log(user.email);
-
     const otpauth = `otpauth://totp/DigitalPymeCRM:${user.email}?secret=${data.secret}&issuer=DigitalPymeCRM`;
 
     qrCode.value = await QRCode.toDataURL(otpauth);
