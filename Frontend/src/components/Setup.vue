@@ -66,7 +66,7 @@ const setupMFAData = async () => {
 
     const data = response.data;
     mfaSecret.value = data.secret;
-    console.log(mfaSecret.value);
+    
     const user = profileUser();
 
     console.log(user.email);
