@@ -78,7 +78,7 @@
           </form>
         </div>
         <div id="footer">
-          <span id="copyright">© 2025 Digital Pyme CRM</span>
+          <span id="copyright">© {{ new Date().getFullYear() }} Digital Pyme CRM</span>
         </div>
       </div>
     </div>
