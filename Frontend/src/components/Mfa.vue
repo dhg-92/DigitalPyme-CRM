@@ -86,12 +86,7 @@ const verifyMFAData = async () => {
     router.push("/");
 
   } catch (e) {
-    if (e.response?.status === 400 && e.response?.data === "MFA already enabled") {
-      alert.addAlert("MFA ya registrado", "error");
-    } else {
-      alert.addAlert("Código incorrecto", "error");
-    }
-    router.push("/");
+    alert.addAlert("Código incorrecto", "error");
     console.error(e);
   }
 };
