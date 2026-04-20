@@ -159,7 +159,7 @@ const loginUser = () => {
         expiresIn: localStorage.getItem("expires_in"),
       });
 
-      router.push("/mfa/setup");
+      router.push("/setup");
     })
     .catch((e) => {
       alert.addAlert("Usuario o contraseña erróneos", "error");
