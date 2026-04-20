@@ -144,6 +144,7 @@ const loginUser = () => {
       }
     })
     .then((userInfo) => {
+      if (!userInfo) return;
       const userData = userInfo.data;
       const saveUser = profileUser();
 
