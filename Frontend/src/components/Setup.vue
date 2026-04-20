@@ -77,7 +77,13 @@ const setupMFAData = async () => {
 
     showMfaSetup.value = true;
   } catch (e) {
-    alert.addAlert("Error al generar QR", "error");
+    if (e.response?.status === 400 && e.response?.data === "MFA already enabled") {
+      alert.addAlert("MFA ya registrado", "error");
+    } else {
+      alert.addAlert("Código incorrecto", "error");
+    }
+    router.push("/");
+    console.error(e);
   }
 };
 
