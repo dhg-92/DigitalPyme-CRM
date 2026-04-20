@@ -130,18 +130,21 @@ const loginUser = () => {
       if (response.data.mfaRequired) {
         localStorage.setItem("mfa_token", response.data.mfaToken);
         router.push("/mfa");
-
-        return Promise.reject("MFA_REQUIRED");
+        return null;
       }
 
       if (response.data.access_token) {
         localStorage.setItem("access_token", response.data.access_token);
-        localStorage.setItem("expires_in", new Date().getTime() + response.data.expires_in * 1000);
+        localStorage.setItem(
+          "expires_in",
+          new Date().getTime() + response.data.expires_in * 1000
+        );
 
         return userInfo();
       }
     })
     .then((userInfo) => {
+      if (!userInfo) return;
       const userData = userInfo.data;
       const saveUser = profileUser();
 
@@ -159,10 +162,8 @@ const loginUser = () => {
       router.push("/setup");
     })
     .catch((e) => {
-      if (e === "MFA_REQUIRED") return;
-
       alert.addAlert("Usuario o contraseña erróneos", "error");
-      console.error("Login error:", e);
+      console.error(e);
     });
 };
 
