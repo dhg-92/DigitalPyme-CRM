@@ -130,7 +130,7 @@ const loginUser = () => {
       if (response.data.mfaRequired) {
         localStorage.setItem("mfa_token", response.data.mfaToken);
         router.push("/mfa");
-        return Promise.reject("MFA REQUIRED");
+        return null;
       }
 
       if (response.data.access_token) {
@@ -144,6 +144,7 @@ const loginUser = () => {
       }
     })
     .then((userInfo) => {
+      if (!userInfo) return;
       const userData = userInfo.data;
       const saveUser = profileUser();
 
@@ -161,8 +162,6 @@ const loginUser = () => {
       router.push("/mfa/setup");
     })
     .catch((e) => {
-      if (e === "MFA REQUIRED") return;
-
       alert.addAlert("Usuario o contraseña erróneos", "error");
       console.error(e);
     });
