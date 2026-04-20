@@ -22,7 +22,7 @@ const router = createRouter({
       meta: { hideHeader: true, hideSidebar: true}
     },
     {
-      path: '/setup',
+      path: '/mfa/setup',
       name: 'setup',
       component: () => import('../components/Setup.vue'),
       meta: { hideHeader: true, hideSidebar: true, userLogged: true }
