@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/mfa',
       name: 'mfa',
-      component: () => import('../components/mfa.vue'),
+      component: () => import('../components/Mfa.vue'),
       meta: { hideHeader: true, hideSidebar: true}
     },
     {
